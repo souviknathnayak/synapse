@@ -21,10 +21,6 @@
 			],
 			"sinks": [
 				{
-					"dataset": {
-						"referenceName": "testsinktable",
-						"type": "DatasetReference"
-					},
 					"name": "Sink"
 				}
 			],
@@ -99,18 +95,12 @@
 				"          ModifiedDate = currentTimestamp()) ~> SetDates",
 				"SetDates sink(allowSchemaDrift: true,",
 				"     validateSchema: true,",
-				"     deletable:false,",
-				"     insertable:true,",
-				"     updateable:false,",
-				"     upsertable:false,",
-				"     recreate:true,",
+				"     store: 'synapse',",
+				"     databaseType: 'spark',",
 				"     format: 'table',",
-				"     staged: true,",
-				"     allowCopyCommand: true,",
-				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true,",
-				"     saveOrder: 1,",
-				"     errorHandlingOption: 'stopOnFirstError') ~> Sink"
+				"     database: 'default',",
+				"     tableName: 'test',",
+				"     recreate:true) ~> Sink"
 			]
 		}
 	}
