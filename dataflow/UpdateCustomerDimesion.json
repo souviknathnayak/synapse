@@ -98,7 +98,7 @@
 				"LookupCustomerID derive(InsertedDate = iif(isNull(InsertedDate),currentTimestamp(),{InsertedDate}),",
 				"          ModifiedDate = currentTimestamp()) ~> SetDates",
 				"SetDates sink(allowSchemaDrift: true,",
-				"     validateSchema: false,",
+				"     validateSchema: true,",
 				"     input(",
 				"          CustomerID as integer,",
 				"          Title as string,",
