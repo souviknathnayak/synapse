@@ -274,9 +274,6 @@
 						},
 						{
 							"name": "SetDates"
-						},
-						{
-							"name": "AllowUpserts"
 						}
 					],
 					"scriptLines": [
@@ -334,8 +331,7 @@
 						"     broadcast: 'auto')~> LookupCustomerID",
 						"LookupCustomerID derive(InsertedDate = iif(isNull(InsertedDate),currentTimestamp(),{InsertedDate}),",
 						"          ModifiedDate = currentTimestamp()) ~> SetDates",
-						"SetDates alterRow(upsertIf(true())) ~> AllowUpserts",
-						"AllowUpserts sink(allowSchemaDrift: true,",
+						"SetDates sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     input(",
 						"          CustomerID as integer,",
@@ -353,30 +349,15 @@
 						"          HashKey as string",
 						"     ),",
 						"     deletable:false,",
-						"     insertable:false,",
+						"     insertable:true,",
 						"     updateable:false,",
-						"     upsertable:true,",
-						"     keys:['CustomerID'],",
+						"     upsertable:false,",
 						"     format: 'table',",
-						"     staged: false,",
+						"     staged: true,",
+						"     allowCopyCommand: true,",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true,",
-						"     errorHandlingOption: 'stopOnFirstError',",
-						"     mapColumn(",
-						"          CustomerID = SourceDB@CustomerID,",
-						"          Title = SourceDB@Title,",
-						"          FirstName = SourceDB@FirstName,",
-						"          MiddleName = SourceDB@MiddleName,",
-						"          LastName = SourceDB@LastName,",
-						"          Suffix = SourceDB@Suffix,",
-						"          CompanyName = SourceDB@CompanyName,",
-						"          SalesPerson = SourceDB@SalesPerson,",
-						"          EmailAddress = SourceDB@EmailAddress,",
-						"          Phone = SourceDB@Phone,",
-						"          InsertedDate,",
-						"          ModifiedDate,",
-						"          HashKey = DimCustomer@HashKey",
-						"     )) ~> Sink"
+						"     errorHandlingOption: 'stopOnFirstError') ~> Sink"
 					]
 				}
 			},
@@ -442,6 +423,46 @@
 			"properties": {
 				"content": {
 					"query": "SELECT CustomerID, FirstName, LastName, ModifiedDate FROM DimCustomer WHERE CustomerID=4",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "SQLPool01",
+						"poolName": "SQLPool01"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/SQL script 3')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "UPDATE [dbo].[CustomerSource]\nSET LastName = 'Lopez'\nWHERE [CustomerId] = 4",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "SQLPool01",
+						"poolName": "SQLPool01"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/SQL script 4')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "SELECT TOP (100) [CustomerID]\n,[Title]\n,[FirstName]\n,[MiddleName]\n,[LastName]\n,[Suffix]\n,[CompanyName]\n,[SalesPerson]\n,[EmailAddress]\n,[Phone]\n,[InsertedDate]\n,[ModifiedDate]\n,[HashKey]\n FROM [dbo].[DimCustomer]",
 					"metadata": {
 						"language": "sql"
 					},
