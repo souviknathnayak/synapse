@@ -87,6 +87,87 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/Dataset')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "synapsesouvik289-WorkspaceDefaultSqlServer",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"DBName": "SQLPool01"
+					}
+				},
+				"annotations": [],
+				"type": "AzureSqlDWTable",
+				"schema": [
+					{
+						"name": "CustomerID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Title",
+						"type": "nvarchar"
+					},
+					{
+						"name": "FirstName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "MiddleName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "LastName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Suffix",
+						"type": "nvarchar"
+					},
+					{
+						"name": "CompanyName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SalesPerson",
+						"type": "nvarchar"
+					},
+					{
+						"name": "EmailAddress",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Phone",
+						"type": "nvarchar"
+					},
+					{
+						"name": "InsertedDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "ModifiedDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "HashKey",
+						"type": "char"
+					}
+				],
+				"typeProperties": {
+					"tableName": "dbo.DimCustomer"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/synapsesouvik289-WorkspaceDefaultSqlServer')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/DimCustomer')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
@@ -162,6 +243,30 @@
 				"typeProperties": {
 					"schema": "dbo",
 					"table": "DimCustomer"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/synapsesouvik289-WorkspaceDefaultSqlServer')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/testsinktable')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "synapsesouvik289-WorkspaceDefaultSqlServer",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"DBName": "SQLPool01"
+					}
+				},
+				"annotations": [],
+				"type": "AzureSqlDWTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "testsinktable"
 				}
 			},
 			"dependsOn": [
@@ -256,7 +361,7 @@
 					"sinks": [
 						{
 							"dataset": {
-								"referenceName": "DimCustomer",
+								"referenceName": "testsinktable",
 								"type": "DatasetReference"
 							},
 							"name": "Sink"
@@ -333,21 +438,6 @@
 						"          ModifiedDate = currentTimestamp()) ~> SetDates",
 						"SetDates sink(allowSchemaDrift: true,",
 						"     validateSchema: true,",
-						"     input(",
-						"          CustomerID as integer,",
-						"          Title as string,",
-						"          FirstName as string,",
-						"          MiddleName as string,",
-						"          LastName as string,",
-						"          Suffix as string,",
-						"          CompanyName as string,",
-						"          SalesPerson as string,",
-						"          EmailAddress as string,",
-						"          Phone as string,",
-						"          InsertedDate as timestamp,",
-						"          ModifiedDate as timestamp,",
-						"          HashKey as string",
-						"     ),",
 						"     deletable:false,",
 						"     insertable:true,",
 						"     updateable:false,",
@@ -365,7 +455,8 @@
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/datasets/CustomerSource')]",
-				"[concat(variables('workspaceId'), '/datasets/DimCustomer')]"
+				"[concat(variables('workspaceId'), '/datasets/DimCustomer')]",
+				"[concat(variables('workspaceId'), '/datasets/testsinktable')]"
 			]
 		},
 		{
