@@ -40,9 +40,6 @@
 				},
 				{
 					"name": "SetDates"
-				},
-				{
-					"name": "AllowUpserts"
 				}
 			],
 			"scriptLines": [
@@ -100,8 +97,7 @@
 				"     broadcast: 'auto')~> LookupCustomerID",
 				"LookupCustomerID derive(InsertedDate = iif(isNull(InsertedDate),currentTimestamp(),{InsertedDate}),",
 				"          ModifiedDate = currentTimestamp()) ~> SetDates",
-				"SetDates alterRow(upsertIf(true())) ~> AllowUpserts",
-				"AllowUpserts sink(allowSchemaDrift: true,",
+				"SetDates sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
 				"          CustomerID as integer,",
@@ -119,30 +115,15 @@
 				"          HashKey as string",
 				"     ),",
 				"     deletable:false,",
-				"     insertable:false,",
+				"     insertable:true,",
 				"     updateable:false,",
-				"     upsertable:true,",
-				"     keys:['CustomerID'],",
+				"     upsertable:false,",
 				"     format: 'table',",
-				"     staged: false,",
+				"     staged: true,",
+				"     allowCopyCommand: true,",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError',",
-				"     mapColumn(",
-				"          CustomerID = SourceDB@CustomerID,",
-				"          Title = SourceDB@Title,",
-				"          FirstName = SourceDB@FirstName,",
-				"          MiddleName = SourceDB@MiddleName,",
-				"          LastName = SourceDB@LastName,",
-				"          Suffix = SourceDB@Suffix,",
-				"          CompanyName = SourceDB@CompanyName,",
-				"          SalesPerson = SourceDB@SalesPerson,",
-				"          EmailAddress = SourceDB@EmailAddress,",
-				"          Phone = SourceDB@Phone,",
-				"          InsertedDate,",
-				"          ModifiedDate,",
-				"          HashKey = DimCustomer@HashKey",
-				"     )) ~> Sink"
+				"     errorHandlingOption: 'stopOnFirstError') ~> Sink"
 			]
 		}
 	}
