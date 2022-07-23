@@ -1,0 +1,19 @@
+{
+	"name": "testsinktable",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "synapsesouvik289-WorkspaceDefaultSqlServer",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"DBName": "SQLPool01"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "testsinktable"
+		}
+	}
+}

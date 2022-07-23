@@ -22,7 +22,7 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "DimCustomer",
+						"referenceName": "testsinktable",
 						"type": "DatasetReference"
 					},
 					"name": "Sink"
@@ -99,21 +99,6 @@
 				"          ModifiedDate = currentTimestamp()) ~> SetDates",
 				"SetDates sink(allowSchemaDrift: true,",
 				"     validateSchema: true,",
-				"     input(",
-				"          CustomerID as integer,",
-				"          Title as string,",
-				"          FirstName as string,",
-				"          MiddleName as string,",
-				"          LastName as string,",
-				"          Suffix as string,",
-				"          CompanyName as string,",
-				"          SalesPerson as string,",
-				"          EmailAddress as string,",
-				"          Phone as string,",
-				"          InsertedDate as timestamp,",
-				"          ModifiedDate as timestamp,",
-				"          HashKey as string",
-				"     ),",
 				"     deletable:false,",
 				"     insertable:true,",
 				"     updateable:false,",
